@@ -1,4 +1,4 @@
-import 'package:ExpenseTracker/transaction.dart';
+import 'package:ExpenseTracker/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +25,9 @@ class HomePage extends StatelessWidget {
       Transaction(id: 't4', amount: 28.23, date: DateTime.now(), title: 'Salt'),
     ];
 
+    final titleController = TextEditingController();
+    final amountController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(title: Text('Expense Tracker')),
       body: Column(children: <Widget>[
@@ -33,6 +36,36 @@ class HomePage extends StatelessWidget {
               child: Text('Chart Here'),
               elevation: 10), //Widgets take the size of their child per se
           width: double.infinity,
+        ),
+        Card(
+          elevation: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Enter Item',
+                ),
+                controller: titleController,
+                //onChanged: (val) {print('Item entered $val'); titleInput = val;},
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Enter Amount',
+                ),
+                controller: amountController,
+                //onChanged: (val) { print('amount entered $val'); amountInput = val;},
+              ),
+              FlatButton(
+                onPressed: () {
+                  print(
+                      'Item entered is ${titleController.text} and amount is ${amountController.text}');
+                },
+                child: Text('Add Transaction'),
+                textColor: Colors.purple,
+              ),
+            ],
+          ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
