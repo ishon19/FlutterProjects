@@ -1,4 +1,5 @@
 import 'package:ExpenseTracker/models/transaction.dart';
+import 'package:ExpenseTracker/widgets/chart.dart';
 import 'package:ExpenseTracker/widgets/newTransactions.dart';
 import 'package:ExpenseTracker/widgets/transactionList.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,6 +70,19 @@ class _HomePageState extends State<HomePage> {
     // ),
   ];
 
+  //get the list of transactions that happened in the last week only
+  List<Transaction> get _recentTransaction {
+    return _transactions.where((element) {
+      return element.date.isAfter(
+        DateTime.now().subtract(
+          Duration(
+            days: 7,
+          ),
+        ),
+      );
+    }).toList();
+  }
+
   void _addNewTransaction(String item, double currentAmount) {
     final newTransaction = Transaction(
       id: DateTime.now().toString(),
@@ -111,12 +125,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
-          Container(
-            child: Card(
-                child: Text('Chart Here'),
-                elevation: 10), //Widgets take the size of their child per se
-            width: double.infinity,
-          ),
+          Chart(_recentTransaction),
           TransactionList(_transactions),
         ]),
       ),
