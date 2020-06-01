@@ -16,23 +16,27 @@ class ExpenseTracker extends StatelessWidget {
       home: HomePage(),
       title: 'Expense Tracker',
       theme: ThemeData(
-          primarySwatch: Colors.red,
-          accentColor: Colors.pink,
-          fontFamily: 'Quicksand',
+        primarySwatch: Colors.red,
+        accentColor: Colors.pink,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.bold,
+              fontSize: 19,
+              color: Colors.deepPurple,
+            ),
+            button: TextStyle(color: Colors.white),),
+        appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
-                  headline6: TextStyle(
-                fontFamily: 'OpenSans',
-                fontWeight: FontWeight.bold,
-                fontSize: 19,
-                color: Colors.deepPurple,
-              )),
-          appBarTheme: AppBarTheme(
-              textTheme: ThemeData.light().textTheme.copyWith(
-                      headline6: TextStyle(
-                    fontFamily: 'Quicksand',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  )))),
+                headline6: TextStyle(
+                  fontFamily: 'Quicksand',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+        ),
+      ),
     );
   }
 }
@@ -83,12 +87,12 @@ class _HomePageState extends State<HomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String item, double currentAmount) {
+  void _addNewTransaction(String item, double currentAmount, DateTime selectedDate) {
     final newTransaction = Transaction(
       id: DateTime.now().toString(),
-      title: item,
+      title: '${item[0].toUpperCase()}${item.substring(1,)}',
       amount: currentAmount,
-      date: DateTime.now(),
+      date: selectedDate,
     );
 
     setState(() {
