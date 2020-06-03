@@ -100,6 +100,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _deleteTransaction(String id){
+    setState(() {
+      _transactions.removeWhere((element) => element.id==id); 
+    });
+  }
+
   void startAddNewTransaction(BuildContext buildContext) {
     showModalBottomSheet(
         context: buildContext,
@@ -130,7 +136,7 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
           Chart(_recentTransaction),
-          TransactionList(_transactions),
+          TransactionList(_transactions,_deleteTransaction),
         ]),
       ),
       floatingActionButton: FloatingActionButton(
