@@ -21,12 +21,13 @@ class ExpenseTracker extends StatelessWidget {
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
               headline6: TextStyle(
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.bold,
-              fontSize: 19,
-              color: Colors.deepPurple,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 19,
+                color: Colors.deepPurple,
+              ),
+              button: TextStyle(color: Colors.white),
             ),
-            button: TextStyle(color: Colors.white),),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: TextStyle(
@@ -87,10 +88,13 @@ class _HomePageState extends State<HomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String item, double currentAmount, DateTime selectedDate) {
+  void _addNewTransaction(
+      String item, double currentAmount, DateTime selectedDate) {
     final newTransaction = Transaction(
       id: DateTime.now().toString(),
-      title: '${item[0].toUpperCase()}${item.substring(1,)}',
+      title: '${item[0].toUpperCase()}${item.substring(
+        1,
+      )}',
       amount: currentAmount,
       date: selectedDate,
     );
@@ -100,9 +104,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _deleteTransaction(String id){
+  void _deleteTransaction(String id) {
     setState(() {
-      _transactions.removeWhere((element) => element.id==id); 
+      _transactions.removeWhere((element) => element.id == id);
     });
   }
 
@@ -120,23 +124,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Expense Tracker'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            onPressed: () => startAddNewTransaction(context),
+    final appBar = AppBar(
+      title: Text('Expense Tracker'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
           ),
-        ],
-      ),
+          onPressed: () => startAddNewTransaction(context),
+        ),
+      ],
+    );
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
-          Chart(_recentTransaction),
-          TransactionList(_transactions,_deleteTransaction),
+          Container(
+            child: Chart(_recentTransaction),
+            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
+          ),
+          Container(
+            child: TransactionList(_transactions, _deleteTransaction),
+            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height -  MediaQuery.of(context).padding.top) * 0.7,
+          ),
         ]),
       ),
       floatingActionButton: FloatingActionButton(
