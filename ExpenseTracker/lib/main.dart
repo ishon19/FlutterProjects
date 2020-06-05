@@ -4,8 +4,14 @@ import 'package:ExpenseTracker/widgets/newTransactions.dart';
 import 'package:ExpenseTracker/widgets/transactionList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(ExpenseTracker());
 }
 
@@ -143,11 +149,17 @@ class _HomePageState extends State<HomePage> {
         child: Column(children: <Widget>[
           Container(
             child: Chart(_recentTransaction),
-            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
+            height: (MediaQuery.of(context).size.height -
+                    appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top) *
+                0.3,
           ),
           Container(
             child: TransactionList(_transactions, _deleteTransaction),
-            height: (MediaQuery.of(context).size.height - appBar.preferredSize.height -  MediaQuery.of(context).padding.top) * 0.7,
+            height: (MediaQuery.of(context).size.height -
+                    appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top) *
+                0.7,
           ),
         ]),
       ),
