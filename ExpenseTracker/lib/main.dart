@@ -4,7 +4,6 @@ import 'package:ExpenseTracker/widgets/newTransactions.dart';
 import 'package:ExpenseTracker/widgets/transactionList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -106,6 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text('Expense Tracker'),
       actions: <Widget>[
@@ -119,11 +119,20 @@ class _HomePageState extends State<HomePage> {
       ],
     );
 
+    final TransactionListWidget = Container(
+            child: TransactionList(_transactions, _deleteTransaction),
+            height: (MediaQuery.of(context).size.height -
+                    appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top) *
+                0.7,
+          );
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
-          Row(
+          //show this switch only if the device orientation is landscape
+          if(isLandscape) Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text('Show Chart'),
@@ -137,20 +146,14 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          _showChart?Container(
+          if(_showChart) Container(
             child: Chart(_recentTransaction),
             height: (MediaQuery.of(context).size.height -
                     appBar.preferredSize.height -
                     MediaQuery.of(context).padding.top) *
                 0.7,
-          ):Container(),
-          Container(
-            child: TransactionList(_transactions, _deleteTransaction),
-            height: (MediaQuery.of(context).size.height -
-                    appBar.preferredSize.height -
-                    MediaQuery.of(context).padding.top) *
-                0.7,
           ),
+          TransactionListWidget,
         ]),
       ),
       floatingActionButton: FloatingActionButton(
