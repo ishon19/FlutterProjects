@@ -17,12 +17,13 @@ class _NewTransactionsState extends State<NewTransactions> {
 
   void onSubmitHandler() {
     print(
-        'Item entered is ${_titleController.text} and amount is ${_amountController.text}');
+      'Item entered is ${_titleController.text} and amount is ${_amountController.text}',
+    );
 
     var enteredTitle = _titleController.text;
     var enteredAmount = double.parse(_amountController.text);
 
-    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectedDate==null) {
+    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectedDate == null) {
       return;
     }
 
@@ -42,8 +43,8 @@ class _NewTransactionsState extends State<NewTransactions> {
       firstDate: DateTime(DateTime.now().year),
       lastDate: DateTime.now(),
     ).then((value) {
-       if(value == null){
-         return;
+      if (value == null) {
+        return;
       }
       setState(() {
         _selectedDate = value;
@@ -55,55 +56,67 @@ class _NewTransactionsState extends State<NewTransactions> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          TextField(
-            onSubmitted: (_) => onSubmitHandler(),
-            decoration: InputDecoration(
-              labelText: 'Enter Item',
-            ),
-            controller: _titleController,
-            //onChanged: (val) {print('Item entered $val'); titleInput = val;},
+      child: SingleChildScrollView(
+          child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
           ),
-          TextField(
-            onSubmitted: (_) => onSubmitHandler(),
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Enter Amount',
-            ),
-            controller: _amountController,
-            //onChanged: (val) { print('amount entered $val'); amountInput = val;},
-          ),
-          //Adding the date picker here
-          Container(
-            height: 70,
-            padding: EdgeInsets.all(10),
-            child: Row(
-              children: <Widget>[
-                Expanded (
-                     child: Text(
-                    _selectedDate==null?'No Date chosen!': 'Selected Date is : ${DateFormat.yMd().format(_selectedDate)}',
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                onSubmitted: (_) => onSubmitHandler(),
+                decoration: InputDecoration(
+                  labelText: 'Enter Item',
                 ),
-                FlatButton(
-                  textColor: Theme.of(context).primaryColor,
-                  onPressed: _displayDatePicker,
-                  child: Text(
-                    'Choose Date',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            ),
+                controller: _titleController,
+                //onChanged: (val) {print('Item entered $val'); titleInput = val;},
+              ),
+              TextField(
+                onSubmitted: (_) => onSubmitHandler(),
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Enter Amount',
+                ),
+                controller: _amountController,
+                //onChanged: (val) { print('amount entered $val'); amountInput = val;},
+              ),
+              //Adding the date picker here
+              Container(
+                height: 70,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'No Date chosen!'
+                            : 'Selected Date is : ${DateFormat.yMd().format(_selectedDate)}',
+                      ),
+                    ),
+                    FlatButton(
+                      textColor: Theme.of(context).primaryColor,
+                      onPressed: _displayDatePicker,
+                      child: Text(
+                        'Choose Date',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              RaisedButton(
+                onPressed: onSubmitHandler,
+                child: Text('Add Transaction'),
+                textColor: Theme.of(context).textTheme.button.color,
+                color: Theme.of(context).primaryColor,
+              ),
+            ],
           ),
-          RaisedButton(
-            onPressed: onSubmitHandler,
-            child: Text('Add Transaction'),
-            textColor: Theme.of(context).textTheme.button.color,
-            color: Theme.of(context).primaryColor,
-          ),
-        ],
+        ),
       ),
     );
   }

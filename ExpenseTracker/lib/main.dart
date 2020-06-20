@@ -4,6 +4,7 @@ import 'package:ExpenseTracker/widgets/newTransactions.dart';
 import 'package:ExpenseTracker/widgets/transactionList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -105,7 +106,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text('Expense Tracker'),
       actions: <Widget>[
@@ -119,44 +121,57 @@ class _HomePageState extends State<HomePage> {
       ],
     );
 
-    final TransactionListWidget = Container(
-            child: TransactionList(_transactions, _deleteTransaction),
-            height: (MediaQuery.of(context).size.height -
-                    appBar.preferredSize.height -
-                    MediaQuery.of(context).padding.top) *
-                0.7,
-          );
+    final transactionListWidget = Container(
+      child: TransactionList(_transactions, _deleteTransaction),
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+    );
 
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
           //show this switch only if the device orientation is landscape
-          if(isLandscape) Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Show Chart'),
-              Switch(
-                value: _showChart,
-                onChanged: (value) {
-                   setState(() {
-                     _showChart = value;
-                   });
-                },
-              ),
-            ],
-          ),
-          if(_showChart) Container(
-            child: Chart(_recentTransaction),
-            height: (MediaQuery.of(context).size.height -
-                    appBar.preferredSize.height -
-                    MediaQuery.of(context).padding.top) *
-                0.7,
-          ),
-          TransactionListWidget,
+          if (isLandscape)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Show Chart'),
+                Switch.adaptive(
+                  activeColor: Theme.of(context).accentColor,
+                  value: _showChart,
+                  onChanged: (value) {
+                    setState(() {
+                      _showChart = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          if (!isLandscape)
+            Container(
+              child: Chart(_recentTransaction),
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.3,
+            ),
+          if (!isLandscape) transactionListWidget,
+          if (isLandscape)
+            _showChart
+                ? Container(
+                    child: Chart(_recentTransaction),
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.3,
+                  )
+                : transactionListWidget,
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Platform.isIOS? Container():FloatingActionButton(
         onPressed: () => startAddNewTransaction(context),
         child: Icon(
           Icons.add,
