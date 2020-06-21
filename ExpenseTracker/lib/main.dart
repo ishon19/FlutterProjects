@@ -104,6 +104,37 @@ class _HomePageState extends State<HomePage> {
     // showDialog(context: buildContext, builder: (context) {return NewTransactions(_addNewTransaction);},);
   }
 
+  List<Widget> _buildPortraitContent(
+    AppBar appBar,
+    Widget transactionListWidget,
+  ) {
+    return [Container(
+      child: Chart(_recentTransaction),
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.3,
+    ),transactionListWidget];
+  }
+
+  List<Widget> _buildLandscapeContent(Widget transactionListWidget) {
+    return [Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Show Chart'),
+        Switch.adaptive(
+          activeColor: Theme.of(context).accentColor,
+          value: _showChart,
+          onChanged: (value) {
+            setState(() {
+              _showChart = value;
+            });
+          },
+        ),
+      ],
+    ),transactionListWidget];
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLandscape =
@@ -134,50 +165,20 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
           //show this switch only if the device orientation is landscape
-          if (isLandscape)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('Show Chart'),
-                Switch.adaptive(
-                  activeColor: Theme.of(context).accentColor,
-                  value: _showChart,
-                  onChanged: (value) {
-                    setState(() {
-                      _showChart = value;
-                    });
-                  },
-                ),
-              ],
-            ),
+          if (isLandscape) ..._buildLandscapeContent(transactionListWidget),
           if (!isLandscape)
-            Container(
-              child: Chart(_recentTransaction),
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  0.3,
-            ),
-          if (!isLandscape) transactionListWidget,
-          if (isLandscape)
-            _showChart
-                ? Container(
-                    child: Chart(_recentTransaction),
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.3,
-                  )
-                : transactionListWidget,
+            ..._buildPortraitContent(appBar, transactionListWidget,
         ]),
       ),
-      floatingActionButton: Platform.isIOS? Container():FloatingActionButton(
-        onPressed: () => startAddNewTransaction(context),
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: () => startAddNewTransaction(context),
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
