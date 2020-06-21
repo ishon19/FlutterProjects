@@ -2,6 +2,8 @@ import 'package:ExpenseTracker/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'transactionItemList.dart';
+
 class TransactionList extends StatelessWidget {
   final List<Transaction> _transactions;
   final Function _deleteTransaction;
@@ -36,44 +38,7 @@ class TransactionList extends StatelessWidget {
         : ListView.builder(
             itemCount: _transactions.length,
             itemBuilder: (ctx, idx) {
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 10,
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FittedBox(
-                          child: Text('\$${_transactions[idx].amount}')),
-                    ),
-                    radius: 30,
-                  ),
-                  title: Text(
-                    _transactions[idx].title,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  subtitle: Text(
-                    DateFormat.yMMMd().format(_transactions[idx].date),
-                  ),
-                  trailing: MediaQuery.of(context).size.width > 450
-                      ? FlatButton.icon(
-                          onPressed: () =>
-                              _deleteTransaction(_transactions[idx].id),
-                          icon: Icon(Icons.delete),
-                          label: Text('Delete'),
-                          textColor: Theme.of(context).errorColor,
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () =>
-                              _deleteTransaction(_transactions[idx].id),
-                          color: Theme.of(context).errorColor,
-                        ),
-                ),
-              );
+              return TransactionItemList(transaction: _transactions[idx], deleteTransaction: _deleteTransaction);
             },
           );
   }
