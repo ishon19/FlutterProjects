@@ -108,31 +108,37 @@ class _HomePageState extends State<HomePage> {
     AppBar appBar,
     Widget transactionListWidget,
   ) {
-    return [Container(
-      child: Chart(_recentTransaction),
-      height: (MediaQuery.of(context).size.height -
-              appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top) *
-          0.3,
-    ),transactionListWidget];
+    return [
+      Container(
+        child: Chart(_recentTransaction),
+        height: (MediaQuery.of(context).size.height -
+                appBar.preferredSize.height -
+                MediaQuery.of(context).padding.top) *
+            0.3,
+      ),
+      transactionListWidget
+    ];
   }
 
   List<Widget> _buildLandscapeContent(Widget transactionListWidget) {
-    return [Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text('Show Chart'),
-        Switch.adaptive(
-          activeColor: Theme.of(context).accentColor,
-          value: _showChart,
-          onChanged: (value) {
-            setState(() {
-              _showChart = value;
-            });
-          },
-        ),
-      ],
-    ),transactionListWidget];
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('Show Chart'),
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: (value) {
+              setState(() {
+                _showChart = value;
+              });
+            },
+          ),
+        ],
+      ),
+      transactionListWidget
+    ];
   }
 
   @override
@@ -165,9 +171,15 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(children: <Widget>[
           //show this switch only if the device orientation is landscape
-          if (isLandscape) ..._buildLandscapeContent(transactionListWidget),
+          if (isLandscape)
+            ..._buildLandscapeContent(
+              transactionListWidget,
+            ),
           if (!isLandscape)
-            ..._buildPortraitContent(appBar, transactionListWidget,
+            ..._buildPortraitContent(
+              appBar,
+              transactionListWidget,
+            ),
         ]),
       ),
       floatingActionButton: Platform.isIOS
