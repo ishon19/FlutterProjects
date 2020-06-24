@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class Category {
   final String id;
   final String title;
-  final Color bgColor;
+  final Color color;
 
-  Category({
+  const Category({
     @required this.id,
     @required this.title,
-    this.bgColor = Colors.lightGreen,
+    this.color = Colors.lightGreen,
   });
 }
