@@ -1,5 +1,8 @@
 import 'package:FoodApp/screens/categories.dart';
 import 'package:FoodApp/screens/mealCategory.dart';
+import 'package:FoodApp/screens/mealDetails.dart';
+import 'package:FoodApp/screens/settingsScreen.dart';
+import 'package:FoodApp/screens/tabsScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,9 +34,16 @@ class MyApp extends StatelessWidget {
             ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: CategoriesScreen(),
+      home: TabsScreen(),
       routes: {
+        '/categories': (context) => TabsScreen(),
+        '/settings': (context) => SettingsScreen(),
         '/category-meals': (context) => CategoryMealsScreen(),
+        MealDetailScreen.routeName: (context) => MealDetailScreen(),
+      },
+      onUnknownRoute: (settings) {
+        //our 404 page here
+        return MaterialPageRoute(builder: (ctx) => CategoriesScreen());
       },
     );
   }
