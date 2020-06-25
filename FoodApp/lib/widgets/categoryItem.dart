@@ -12,7 +12,7 @@ class CategoryItem extends StatelessWidget {
     Navigator.of(context).pushNamed('/category-meals', arguments: {
       'id': id,
       'title': title,
-    });
+    }).then((value) => print('received from last screen $value'));
   }
 
   @override

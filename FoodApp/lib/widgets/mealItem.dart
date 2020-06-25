@@ -15,10 +15,20 @@ class MealItem extends StatelessWidget {
     @required this.imageUrl,
     @required this.affordability,
     @required this.complexity,
-  });
+  }){
+    print('mealitem const called');
+  }
 
   void selectMeal(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(MealDetailScreen.routeName, arguments: id);
+    Navigator.of(ctx)
+        .pushNamed(
+          MealDetailScreen.routeName,
+          arguments: id,
+        ).then((mealId) {
+           print(mealId);
+           //remove the item which we have sent
+           //if(mealId!=null) removeItem(mealId);
+        });
   }
 
   String get complexityText {

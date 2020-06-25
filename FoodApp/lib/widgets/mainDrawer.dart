@@ -43,13 +43,13 @@ class MainDrawer extends StatelessWidget {
             height: 20,
           ),
           _buildDrawerItem(Icons.restaurant, 'Meals', () {
-            Navigator.of(context).pushNamed('/categories');
+            Navigator.of(context).pushReplacementNamed('/categories');
           }),
           _buildDrawerItem(
             Icons.settings,
             'Settings',
             () {
-              Navigator.of(context).pushNamed('/settings');
+              Navigator.of(context).pushReplacementNamed('/settings');
             },
           ),
         ],
