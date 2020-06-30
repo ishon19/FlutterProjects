@@ -1,13 +1,16 @@
+import 'package:ShopApp/providers/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartItem extends StatelessWidget {
-  final String id;
+  final String id, productId;
   final double price;
   final int quantity;
   final String title;
 
   CartItem({
     this.id,
+    this.productId,
     this.price,
     this.quantity,
     this.title,
@@ -15,25 +18,41 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(
-        horizontal: 15,
-        vertical: 4,
+
+    final cartProvider = Provider.of<Cart>(context, listen: false);
+
+    return Dismissible(
+      key: ValueKey(id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right:20),
+        color: Theme.of(context).errorColor,
+        child: IconButton(icon: Icon(Icons.delete), onPressed: (){}, color: Colors.white,),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: ListTile(
-          leading: CircleAvatar(
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: FittedBox(child: Text('\$$price')),
+      child: Card(
+        margin: EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListTile(
+            leading: CircleAvatar(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: FittedBox(child: Text('\$$price')),
+              ),
             ),
+            title: Text(title),
+            subtitle: Text('Total: \$${(price * quantity).toStringAsFixed(2)}'),
+            trailing: Text('$quantity x'),
           ),
-          title: Text(title),
-          subtitle: Text('Total: \$${(price * quantity)}'),
-          trailing: Text('$quantity x'),
         ),
       ),
+      onDismissed: (direction){
+        cartProvider.removeItem(productId);
+      },
     );
   }
 }

@@ -22,13 +22,13 @@ class Cart extends ChangeNotifier {
   }
 
   int get getItemCount {
-    return _items==null?0:_items.length;
+    return _items == null ? 0 : _items.length;
   }
 
   double get getTotalAmount {
     double total = 0.0;
     _items.forEach((key, value) {
-      total+=value.price * value.quantity;
+      total += value.price * value.quantity;
     });
     return total;
   }
@@ -53,6 +53,33 @@ class Cart extends ChangeNotifier {
                 quantity: 1,
               ));
     }
+    notifyListeners();
+  }
+
+  void removeItem(String id) {
+    _items.remove(id);
+    notifyListeners();
+  }
+
+  void removeSingleItem(String id) {
+    if (!_items.containsKey(id)) return;
+    if (_items[id].quantity > 1) {
+      _items.update(
+          id,
+          (value) => CartItem(
+                id: value.id,
+                title: value.title,
+                price: value.price,
+                quantity: value.quantity - 1,
+              ));
+    } else {
+      _items.remove(id);
+    }
+    notifyListeners();
+  }
+
+  void clear() {
+    _items = {};
     notifyListeners();
   }
 }
