@@ -1,5 +1,8 @@
 import 'package:ShopApp/providers/product.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Products with ChangeNotifier {
   List<Product> _list = [
@@ -46,10 +49,51 @@ class Products with ChangeNotifier {
   }
 
   Product findById(String id) {
-     return _list.firstWhere((element) => element.id == id);
+    return _list.firstWhere((element) => element.id == id);
   }
 
-  void addProduct() {
+  Future<void> addProduct(Product product) {
+    const url = 'https://fluttershopapp-f979d.firebaseio.com/products.json';
+    return http
+        .post(url,
+            body: json.encode({
+              'id': product.id,
+              'imageUrl': product.imageUrl,
+              'price': product.price,
+              'isFavorite': product.isFavorite,
+              'title': product.title,
+              'description': product.description,
+            }))
+        .then((response) {
+      print('The response is ${json.decode(response.body)}');
+      final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+      );
+      _list.add(newProduct);
+      notifyListeners();
+    });
+  }
+
+  void updateProduct(String id, Product newProduct) {
+    int index = _list.indexWhere((element) => element.id == id);
+    if (index >= 0) _list[index] = newProduct;
+    notifyListeners();
+  }
+
+  void deleteProduct(String id, BuildContext ctx) {
+    _list.removeWhere((element) => element.id == id);
+    Scaffold.of(ctx).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Item Removed!',
+        ),
+        duration: Duration(seconds: 2),
+      ),
+    );
     notifyListeners();
   }
 }
