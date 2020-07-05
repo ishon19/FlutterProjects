@@ -81,7 +81,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
     _form.currentState.save();
@@ -93,19 +93,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     if (_editedProduct.id == null) {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      });
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        print('[saveForm] received error: $error');
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Error '),
+            content:
+                Text('Something went wrong while saving the data!\n$error'),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: Text('OK'),
+              )
+            ],
+          ),
+        );
+      } finally {
+        // setState(() {
+        //   _isLoading = false;
+        // });
+        // Navigator.of(context).pop();
+      }
     } else {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-      Navigator.of(context).pop();
+      //Navigator.of(context).pop();
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
     //Navigator.of(context).pop();
   }
 

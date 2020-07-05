@@ -16,6 +16,33 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var _showFav = false;
+  var _initDone = true;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    //Provider.of<Products>(context).fetchProducts();
+    //Future.delayed(Duration.zero).then((_) => Provider.of<Products>(context).fetchProducts());
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if (_initDone) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<Products>(context).fetchProducts().then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _initDone = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +76,24 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 ];
               }),
           Consumer<Cart>(
-            builder: (ctx, cartData, child) => Badge( 
+            builder: (ctx, cartData, child) => Badge(
               child: child,
               value: cartData.getItemCount.toString(),
             ),
             child: IconButton(
-                icon: Icon(Icons.shopping_cart),
-                onPressed: (){
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-              ),
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
           ),
         ],
       ),
-      body: ProductGridList(_showFav),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductGridList(_showFav),
       drawer: AppDrawer(),
     );
   }
