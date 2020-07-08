@@ -1,9 +1,12 @@
 import 'package:ShopApp/models/httpException.dart';
+import 'package:ShopApp/providers/auth.dart';
 import 'package:ShopApp/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class Products with ChangeNotifier {
   List<Product> _list = [
@@ -39,7 +42,11 @@ class Products with ChangeNotifier {
     //   imageUrl:
     //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     // ),
-  ];
+  ];  
+
+  final authToken;
+
+  Products(this.authToken, this._list);
 
   List<Product> get favItems {
     return _list.where((element) => element.isFavorite).toList();
@@ -54,7 +61,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchProducts() async {
-    const url = 'https://fluttershopapp-f979d.firebaseio.com/products.json';
+    final url = 'https://fluttershopapp-f979d.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       List<Product> tempList = [];
@@ -65,7 +72,7 @@ class Products with ChangeNotifier {
           description: value['description'],
           id: key,
           title: value['title'],
-          price: value['price'],
+          price: double.parse(value['price'].toString()),
           imageUrl: value['imageUrl'],
           isFavorite: value['isFavorite'],
         ));
@@ -73,12 +80,13 @@ class Products with ChangeNotifier {
       notifyListeners();
       _list = tempList;
     } catch (error) {
+      print(error);
       throw error;
     }
   }
 
   Future<void> addProduct(Product product) async {
-    const url = 'https://fluttershopapp-f979d.firebaseio.com/products.json';
+    const url = 'https://fluttershopapp-f979d.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -108,7 +116,7 @@ class Products with ChangeNotifier {
     int index = _list.indexWhere((element) => element.id == id);
     if (index >= 0) {
       final url =
-          'https://fluttershopapp-f979d.firebaseio.com/products/$id.json';
+          'https://fluttershopapp-f979d.firebaseio.com/products/$id.json?auth=$authToken';
       await http.patch(url,
           body: json.encode({
             'title': newProduct.title,
@@ -122,7 +130,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = 'https://fluttershopapp-f979d.firebaseio.com/products/$id.json';
+    final url = 'https://fluttershopapp-f979d.firebaseio.com/products/$id.json?auth=$authToken';
     int elementIndex = _list.indexWhere((element) => element.id == id);
     Product elementToBeDeleted = _list.elementAt(elementIndex);
     _list.removeWhere((element) => element.id == id);
