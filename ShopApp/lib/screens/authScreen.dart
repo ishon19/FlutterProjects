@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:ShopApp/models/httpException.dart';
+import 'package:ShopApp/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -100,7 +103,24 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  void _showErrorDialogue(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('An error occured'),
+              content: Text(message),
+              actions: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                )
+              ],
+            ));
+  }
+
+  Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -109,10 +129,40 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      // Log user in
-    } else {
-      // Sign user up
+
+    try {
+      if (_authMode == AuthMode.Login) {
+        // Log user in
+        await Provider.of<Auth>(context, listen: false).login(
+          _authData['email'],
+          _authData['password'],
+        );
+      } else {
+        // Sign user up
+        await Provider.of<Auth>(context, listen: false).signUp(
+          _authData['email'],
+          _authData['password'],
+        );
+      }
+    } on HttpException catch (error) {
+      var errorMessage = 'Authentication Failed.';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage =
+            'Entered Email Address already in use, please enter a new one';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'Not an valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is weak, please enter a new one';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage =
+            'This email address was not found, please check and try again';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'The entered password is not correct, please try again';
+      }
+      _showErrorDialogue(errorMessage);
+    } catch (error) {
+      var errorMessage = 'Unable to Authenticate, please try again.';
+      _showErrorDialogue(errorMessage);
     }
     setState(() {
       _isLoading = false;

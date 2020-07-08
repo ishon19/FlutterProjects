@@ -1,3 +1,4 @@
+import 'package:ShopApp/providers/auth.dart';
 import 'package:ShopApp/providers/cart.dart';
 import 'package:ShopApp/providers/orders.dart';
 import 'package:ShopApp/providers/products.dart';
@@ -24,22 +25,25 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => Products()),
         ChangeNotifierProvider(create: (ctx) => Cart()),
         ChangeNotifierProvider(create: (ctx) => Order()),
+        ChangeNotifierProvider(create: (ctx) => Auth()),
       ],
-      child: MaterialApp(
-        title: 'Shop App',
-        theme: ThemeData(
-            primarySwatch: Colors.teal,
-            accentColor: Colors.orangeAccent,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            fontFamily: 'Lato'),
-        home: AuthScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrderScreen.routeName: (ctx) => OrderScreen(),
-          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen(),
-        },
+      child: Consumer<Auth>(
+        builder: (ctx, authData, _) => MaterialApp(
+          title: 'Shop App',
+          theme: ThemeData(
+              primarySwatch: Colors.teal,
+              accentColor: Colors.orangeAccent,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+              fontFamily: 'Lato'),
+          home: authData.isAutherised ? ProductOverviewScreen() : AuthScreen(),
+          routes: {
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrderScreen.routeName: (ctx) => OrderScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            EditProductScreen.routeName: (ctx) => EditProductScreen(),
+          },
+        ),
       ),
     );
   }
