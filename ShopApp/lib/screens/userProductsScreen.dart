@@ -9,12 +9,14 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context).fetchProducts();
+    await Provider.of<Products>(context).fetchProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<Products>(context);
+    //commenting out this provider declaration as this may
+    //cause infinite loop
+    //final productsProvider = Provider.of<Products>(context);
 
     return Scaffold(
       drawer: AppDrawer(),
@@ -29,24 +31,34 @@ class UserProductsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemBuilder: (ctx, idx) => Column(
-              children: [
-                UserProductItem(
-                  productsProvider.items[idx].id,
-                  productsProvider.items[idx].title,
-                  productsProvider.items[idx].imageUrl,
-                ),
-                Divider(),
-              ],
-            ),
-            itemCount: productsProvider.items.length,
-          ),
-        ),
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, snapShot) =>
+            snapShot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProducts(context),
+                    child: Consumer<Products>(
+                      builder: (ctx, productsProvider, _) => Padding(
+                        padding: EdgeInsets.all(8),
+                        child: ListView.builder(
+                          itemBuilder: (ctx, idx) => Column(
+                            children: [
+                              UserProductItem(
+                                productsProvider.items[idx].id,
+                                productsProvider.items[idx].title,
+                                productsProvider.items[idx].imageUrl,
+                              ),
+                              Divider(),
+                            ],
+                          ),
+                          itemCount: productsProvider.items.length,
+                        ),
+                      ),
+                    ),
+                  ),
       ),
     );
   }

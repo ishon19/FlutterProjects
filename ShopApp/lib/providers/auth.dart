@@ -22,12 +22,23 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  String get userId {
+    return _userId;
+  }
+
   Future<void> signUp(String email, String password) async {
     return _authenticate(email, password, 'signUp');
   }
 
   Future<void> login(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');
+  }
+
+  void logout() {
+    _userId = null;
+    _token = null;
+    _expiryDate = null;
+    notifyListeners();
   }
 
   Future<void> _authenticate(String email, String password, String key) async {

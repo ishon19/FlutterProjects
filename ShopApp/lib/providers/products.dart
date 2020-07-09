@@ -1,12 +1,9 @@
 import 'package:ShopApp/models/httpException.dart';
-import 'package:ShopApp/providers/auth.dart';
 import 'package:ShopApp/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:provider/provider.dart';
 
 class Products with ChangeNotifier {
   List<Product> _list = [
@@ -45,8 +42,9 @@ class Products with ChangeNotifier {
   ];  
 
   final authToken;
+  final userId;
 
-  Products(this.authToken, this._list);
+  Products(this.authToken, this.userId ,this._list);
 
   List<Product> get favItems {
     return _list.where((element) => element.isFavorite).toList();
@@ -60,12 +58,19 @@ class Products with ChangeNotifier {
     return _list.firstWhere((element) => element.id == id);
   }
 
-  Future<void> fetchProducts() async {
-    final url = 'https://fluttershopapp-f979d.firebaseio.com/products.json?auth=$authToken';
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    final filterString = filterByUser? 'orderBy="creatorId"&equalTo="$userId"': '';
+    //Added the filtering condition to fetch only the creator specific products
+    final url = 'https://fluttershopapp-f979d.firebaseio.com/products.json?auth=$authToken&$filterString';
     try {
       final response = await http.get(url);
       List<Product> tempList = [];
       print('The server response is ${json.decode(response.body)}');
+      final favoriteUrl =
+        'https://fluttershopapp-f979d.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final getFavorites = await http.get(favoriteUrl);
+      final favoriteData = json.decode(getFavorites.body);
+
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       extractedData.forEach((key, value) {
         tempList.add(Product(
@@ -74,7 +79,7 @@ class Products with ChangeNotifier {
           title: value['title'],
           price: double.parse(value['price'].toString()),
           imageUrl: value['imageUrl'],
-          isFavorite: value['isFavorite'],
+          isFavorite: favoriteData == null? false: favoriteData[key] ?? false,
         ));
       });
       notifyListeners();
@@ -86,16 +91,16 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url = 'https://fluttershopapp-f979d.firebaseio.com/products.json?auth=$authToken';
+    final url = 'https://fluttershopapp-f979d.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(url,
           body: json.encode({
             'id': product.id,
             'imageUrl': product.imageUrl,
             'price': product.price,
-            'isFavorite': product.isFavorite,
             'title': product.title,
             'description': product.description,
+            'creatorId': userId,
           }));
       final newProduct = Product(
         id: json.decode(response.body)['name'],
