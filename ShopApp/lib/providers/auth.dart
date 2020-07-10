@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:ShopApp/models/httpException.dart';
 import 'package:flutter/widgets.dart';
@@ -112,6 +113,7 @@ class Auth with ChangeNotifier {
     _token = savedUserData['token'];
     _userId = savedUserData['userId'];
     _expiryDate = savedUserData['expiryDate'];
+    print('[tryAutoLogin] $_userId and Expiry $_expiryDate');
     notifyListeners();
     _autoLogout();
     return true;

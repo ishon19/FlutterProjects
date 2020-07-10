@@ -54,7 +54,10 @@ class MyApp extends StatelessWidget {
               ? ProductOverviewScreen()
               : FutureBuilder(
                   future: authData.tryAutoLogin(),
-                  builder: (ctx, snapShot) => snapShot.connectionState==ConnectionState.waiting? SplashScreen():AuthScreen(),
+                  builder: (ctx, snapShot) =>
+                      snapShot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
                 ),
           routes: {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),

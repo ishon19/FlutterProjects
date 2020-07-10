@@ -36,9 +36,14 @@ class ProductItem extends StatelessWidget {
               arguments: product.id,
             );
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder:
+                  AssetImage('lib/assets/images/product-placeholder.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         footer: GridTileBar(
@@ -64,11 +69,15 @@ class ProductItem extends StatelessWidget {
               cart.addItem(product.id, product.price, product.title);
               Scaffold.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Added to the cart',),
+                  content: Text(
+                    'Added to the cart',
+                  ),
                   duration: Duration(seconds: 2),
-                  action: SnackBarAction(label: 'REMOVE', onPressed: (){
-                    cart.removeSingleItem(product.id);
-                  }),
+                  action: SnackBarAction(
+                      label: 'REMOVE',
+                      onPressed: () {
+                        cart.removeSingleItem(product.id);
+                      }),
                 ),
               );
             },
