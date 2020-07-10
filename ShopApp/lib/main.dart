@@ -9,6 +9,7 @@ import 'package:ShopApp/screens/orderScreen.dart';
 import 'package:ShopApp/screens/productDetailScreen.dart';
 import 'package:ShopApp/screens/productOverviewScreen.dart';
 import 'package:ShopApp/screens/userProductsScreen.dart';
+import 'package:ShopApp/widgets/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +50,12 @@ class MyApp extends StatelessWidget {
               accentColor: Colors.orangeAccent,
               visualDensity: VisualDensity.adaptivePlatformDensity,
               fontFamily: 'Lato'),
-          home: authData.isAutherised ? ProductOverviewScreen() : AuthScreen(),
+          home: authData.isAutherised
+              ? ProductOverviewScreen()
+              : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (ctx, snapShot) => snapShot.connectionState==ConnectionState.waiting? SplashScreen():AuthScreen(),
+                ),
           routes: {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
             CartScreen.routeName: (ctx) => CartScreen(),
