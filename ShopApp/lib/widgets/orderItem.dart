@@ -17,26 +17,37 @@ class _OrderElementState extends State<OrderElement> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text('\$${widget.order.amount}'),
-            subtitle: Text(
-                DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime)),
-            trailing: IconButton(
-                icon: Icon(!_expanded ? Icons.expand_more : Icons.expand_less),
-                onPressed: () {
-                  setState(() {
-                    _expanded = !_expanded;
-                  });
-                }),
-          ),
-          if (_expanded)
-            Container(
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 200),
+      height: _expanded
+          ? min(widget.order.products.length * 20.0 + 170.0, 190.0)
+          : 95,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text('\$${widget.order.amount}'),
+              subtitle: Text(
+                  DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime)),
+              trailing: IconButton(
+                  icon:
+                      Icon(!_expanded ? Icons.expand_more : Icons.expand_less),
+                  onPressed: () {
+                    setState(() {
+                      _expanded = !_expanded;
+                    });
+                  }),
+            ),
+            //if (_expanded)
+            AnimatedContainer(
+              duration: Duration(
+                milliseconds: 200,
+              ),
               padding: EdgeInsets.all(10),
-              height: min(widget.order.products.length * 20.0 + 70.0, 100.0),
+              height: _expanded
+                  ? min(widget.order.products.length * 20.0 + 70.0, 100.0)
+                  : 0,
               child: ListView(
                 children: widget.order.products
                     .map(
@@ -61,7 +72,8 @@ class _OrderElementState extends State<OrderElement> {
                     .toList(),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

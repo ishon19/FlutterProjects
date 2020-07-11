@@ -68,13 +68,13 @@ class Order with ChangeNotifier {
     extractedData.forEach((key, value) {
       loadedOrders.add(OrderItem(
         id: key,
-        amount: value['amount'],
+        amount: double.parse(value['amount'].toString()),
         dateTime: DateTime.parse(value['dateTime']),
         products: (value['products'] as List<dynamic>)
             .map((e) => CartItem(
                   id: e['id'],
                   title: e['title'],
-                  price: e['price'],
+                  price: double.parse(e['price'].toString()),
                   quantity: e['quantity'],
                 ))
             .toList(),

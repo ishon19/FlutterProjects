@@ -1,3 +1,4 @@
+import 'package:ShopApp/helpers/custom_route.dart';
 import 'package:ShopApp/providers/auth.dart';
 import 'package:ShopApp/screens/orderScreen.dart';
 import 'package:ShopApp/screens/userProductsScreen.dart';
@@ -27,7 +28,12 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.payment),
             title: Text('Orders'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(OrderScreen.routeName);
+              //Navigator.of(context).pushReplacementNamed(OrderScreen.routeName);
+              Navigator.of(context).pushReplacement(
+                CustomRoute(
+                  builder: (ctx) => OrderScreen(),
+                ),
+              );
             },
           ),
           Divider(),

@@ -1,3 +1,4 @@
+import 'package:ShopApp/helpers/custom_route.dart';
 import 'package:ShopApp/providers/auth.dart';
 import 'package:ShopApp/providers/cart.dart';
 import 'package:ShopApp/providers/orders.dart';
@@ -46,10 +47,15 @@ class MyApp extends StatelessWidget {
         builder: (ctx, authData, _) => MaterialApp(
           title: 'Shop App',
           theme: ThemeData(
-              primarySwatch: Colors.teal,
-              accentColor: Colors.orangeAccent,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              fontFamily: 'Lato'),
+            primarySwatch: Colors.teal,
+            accentColor: Colors.orangeAccent,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            fontFamily: 'Lato',
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: CustomPageTransitionBuilder(),
+              TargetPlatform.iOS: CustomPageTransitionBuilder(),
+            }),
+          ),
           home: authData.isAutherised
               ? ProductOverviewScreen()
               : FutureBuilder(
