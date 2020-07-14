@@ -99,6 +99,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<bool> tryAutoLogin() async {
+    print('[tryAutoLogin] Inside..');
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
       return false;
@@ -112,7 +113,7 @@ class Auth with ChangeNotifier {
 
     _token = savedUserData['token'];
     _userId = savedUserData['userId'];
-    _expiryDate = savedUserData['expiryDate'];
+    _expiryDate = expiryDate;
     print('[tryAutoLogin] $_userId and Expiry $_expiryDate');
     notifyListeners();
     _autoLogout();
