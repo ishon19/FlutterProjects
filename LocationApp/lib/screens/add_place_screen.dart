@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:LocationApp/providers/great_places.dart';
 import 'package:LocationApp/widgets/image_input.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddPlacesScreen extends StatefulWidget {
   static const routeName = '/add-place';
@@ -16,6 +18,12 @@ class _AddPlacesScreenState extends State<AddPlacesScreen> {
 
   void _selectImage(File pickedImage) {
     _pickedImage = pickedImage;
+  }
+
+  void _savePlace() {
+    if(_titleController.text.isEmpty || _pickedImage==null) return;
+    Provider.of<GreatPlaces>(context, listen: false).addPlace(_titleController.text, _pickedImage);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -40,13 +48,13 @@ class _AddPlacesScreenState extends State<AddPlacesScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  ImageInput(),
+                  ImageInput(_selectImage),
                 ],
               ),
             ),
           )),
           RaisedButton.icon(
-            onPressed: () {},
+            onPressed: _savePlace,
             icon: Icon(
               Icons.add,
             ),

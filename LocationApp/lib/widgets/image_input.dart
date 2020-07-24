@@ -5,12 +5,18 @@ import 'package:path_provider/path_provider.dart' as syspath;
 import 'package:path/path.dart' as path;
 
 class ImageInput extends StatefulWidget {
+
+  final Function onSelectImage;
+
+  ImageInput(this.onSelectImage);
+
   @override
   _ImageInputState createState() => _ImageInputState();
 }
 
 class _ImageInputState extends State<ImageInput> {
   File _storedImage;
+  
 
   Future<void> _takePicture() async {
     final imageFile =
@@ -23,6 +29,7 @@ class _ImageInputState extends State<ImageInput> {
     final appDirectory = await syspath.getApplicationDocumentsDirectory();
     final fileName = path.basename(imageFile.path);
     final savedImage = _storedImage.copy('${appDirectory.path}/$fileName');
+    widget.onSelectImage(savedImage);
   }
 
   @override
