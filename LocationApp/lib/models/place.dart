@@ -1,15 +1,15 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 class PlaceLocation {
-  final double lat;
-  final double long;
+  final double latitude;
+  final double longitude;
   final String address;
 
   PlaceLocation({
-    @required this.lat,
-    @required this.long,
+    @required this.latitude,
+    @required this.longitude,
     this.address,
   });
 }

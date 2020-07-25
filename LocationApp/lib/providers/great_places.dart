@@ -1,22 +1,22 @@
 import 'dart:io';
 
-import 'package:LocationApp/models/place.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
+
+import '../models/place.dart';
 
 class GreatPlaces with ChangeNotifier {
   List<Place> _items = [];
 
   List<Place> get items {
-    return [...items];
+    return [..._items];
   }
 
   void addPlace(String title, File image) {
-    print('[AddPlace] Inside');
     final newPlace = Place(
-      id: DateTime.now().toString(),
-      title: title,
-      location: null,
+      id: DateTime.now().toIso8601String(),
       image: image,
+      location: null,
+      title: title,
     );
 
     _items.add(newPlace);

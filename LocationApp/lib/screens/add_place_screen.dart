@@ -1,18 +1,19 @@
 import 'dart:io';
 
 import 'package:LocationApp/providers/great_places.dart';
-import 'package:LocationApp/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AddPlacesScreen extends StatefulWidget {
+import '../widgets/image_input.dart';
+
+class AddPlaceScreen extends StatefulWidget {
   static const routeName = '/add-place';
 
   @override
-  _AddPlacesScreenState createState() => _AddPlacesScreenState();
+  _AddPlaceScreenState createState() => _AddPlaceScreenState();
 }
 
-class _AddPlacesScreenState extends State<AddPlacesScreen> {
+class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _titleController = TextEditingController();
   File _pickedImage;
 
@@ -30,35 +31,32 @@ class _AddPlacesScreenState extends State<AddPlacesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Place'),
+        title: Text('Add a New Place'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+        children: <Widget>[
           Expanded(
-              child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Title'),
-                    controller: _titleController,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ImageInput(_selectImage),
-                ],
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Title'),
+                      controller: _titleController,
+                    ),
+                    SizedBox(height: 10,),
+                    ImageInput(_selectImage),
+                  ],
+                ),
               ),
             ),
-          )),
+          ),
           RaisedButton.icon(
+            icon: Icon(Icons.add),
+            label: Text('Add Place'),
             onPressed: _savePlace,
-            icon: Icon(
-              Icons.add,
-            ),
-            label: Text('Add a place'),
             elevation: 0,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             color: Theme.of(context).accentColor,
