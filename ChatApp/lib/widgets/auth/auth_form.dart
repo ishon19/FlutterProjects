@@ -33,6 +33,7 @@ class _AuthFormState extends State<AuthForm> {
 
     if (isValid) {
       _formKey.currentState.save();
+      print('Submit to be called');
       widget.submitFn(
         _userEmail.trim(),
         _userPassword.trim(),
@@ -52,6 +53,7 @@ class _AuthFormState extends State<AuthForm> {
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -64,7 +66,6 @@ class _AuthFormState extends State<AuthForm> {
                       if (value.isEmpty || !value.contains('@')) {
                         return 'Invalid Email Address';
                       }
-                      return null;
                     },
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
@@ -80,7 +81,6 @@ class _AuthFormState extends State<AuthForm> {
                       validator: (value) {
                         if (value.isEmpty || value.length < 4)
                           return 'Username must be of 4 characters';
-                        return '';
                       },
                       decoration: InputDecoration(
                         labelText: 'Username',
@@ -94,7 +94,7 @@ class _AuthFormState extends State<AuthForm> {
                     validator: (value) {
                       if (value.isEmpty || value.length < 6)
                         return 'Password must be of 6 characters';
-                      return '';
+                      return null;
                     },
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -104,22 +104,25 @@ class _AuthFormState extends State<AuthForm> {
                   SizedBox(
                     height: 12,
                   ),
-                  if(widget.isLoading) CircularProgressIndicator()
-                  else RaisedButton(
-                    onPressed: _trySubmit,
-                    child: Text(_isLogin ? 'Login' : 'Signup'),
-                  ),
-                  if(!widget.isLoading) FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLogin = !_isLogin;
-                      });
-                    },
-                    textColor: Theme.of(context).primaryColor,
-                    child: Text(_isLogin
-                        ? 'Already have an account?'
-                        : 'Create new account'),
-                  ),
+                  if (widget.isLoading)
+                    CircularProgressIndicator()
+                  else
+                    RaisedButton(
+                      onPressed: _trySubmit,
+                      child: Text(_isLogin ? 'Login' : 'Signup'),
+                    ),
+                  if (!widget.isLoading)
+                    FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
+                      textColor: Theme.of(context).primaryColor,
+                      child: Text(_isLogin
+                          ? 'Already have an account?'
+                          : 'Create new account'),
+                    ),
                 ],
               ),
             ),
