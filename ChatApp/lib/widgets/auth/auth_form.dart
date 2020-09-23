@@ -76,9 +76,12 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_isLogin) UserImagePicker(_pickedImage),
+                  if (!_isLogin) UserImagePicker(_pickedImage),
                   TextFormField(
                     key: ValueKey('email'),
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     onSaved: (value) {
                       _userEmail = value;
                     },
@@ -95,6 +98,9 @@ class _AuthFormState extends State<AuthForm> {
                   if (!_isLogin)
                     TextFormField(
                       key: ValueKey('username'),
+                      autocorrect: true,
+                      textCapitalization: TextCapitalization.words,
+                      enableSuggestions: true,
                       onSaved: (value) {
                         _userName = value;
                       },
@@ -139,7 +145,7 @@ class _AuthFormState extends State<AuthForm> {
                         });
                       },
                       textColor: Theme.of(context).primaryColor,
-                      child: Text(_isLogin
+                      child: Text(!_isLogin
                           ? 'Already have an account?'
                           : 'Create new account'),
                     ),

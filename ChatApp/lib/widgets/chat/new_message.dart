@@ -38,6 +38,9 @@ class _NewMessageState extends State<NewMessage> {
             child: TextField(
               controller: _controller,
               //Wrapped with expanded else textfield takes too much space
+              autocorrect: true,
+              textCapitalization: TextCapitalization.sentences,
+              enableSuggestions: true,
               decoration: InputDecoration(labelText: 'Send Message'),
               onChanged: (value) {
                 setState(() {
