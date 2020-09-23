@@ -36,6 +36,7 @@ class Messages extends StatelessWidget {
               itemBuilder: (ctx, idx) => MessageBubble(
                 chatDocs[idx]['text'],
                 chatDocs[idx]['username'],
+                chatDocs[idx]['userImage'],
                 chatDocs[idx]['userId'] == futureSnapShot.data.uid,
                 key: ValueKey(chatDocs[idx]
                     .documentID), // aids flutter in rendering the list
